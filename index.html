@@ -1,0 +1,84 @@
+<!-- Saved as index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <!-- Meta and title -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Water Drop Catcher</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="style.css"  />
+</head>
+
+
+<body>
+  <!-- Header and instructions -->
+  <div class="container text-center mt-3">
+    <div class="row">
+      <div class="col-12">
+        <!-- Enhanced Game icon and title -->
+        <div class="logo-wrapper mx-auto mb-2">
+          <img src="images/charity-water.png" alt="Charity Water" id="charityIcon" class="shadow" />
+        </div>
+        <h1 class="mt-2 text-primary">Water Drop Catcher</h1>
+        <p class="text-muted">Collect 200 clean drops to complete the game!</p>
+      </div>
+    </div>
+    <!-- Score and timer display -->
+    <div class="row mt-3">
+      <div class="col-6 text-start">
+        <div id="scoreBoard">Cans Collected: <span id="score">0</span></div>
+      </div>
+      <div class="col-6 text-end">
+        <p class="timer">Time Left: <span id="time">30</span>s</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main game area container -->
+  <div class="container d-flex justify-content-center mt-3"> <!-- HIGHLIGHTED: Container for centering game -->
+    <div class="card p-3 game-container"> <!-- HIGHLIGHTED: Card/frame around game -->
+
+      <!-- Game area where drops fall and bucket moves -->
+      <div class="game-area position-relative">
+        <!-- Start button overlay -->
+        <div id="startOverlay" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.85);z-index:10;display:flex;align-items:center;justify-content:center;">
+          <button id="startBtn" class="btn btn-lg btn-warning fw-bold">Start Game</button>
+        </div>
+        <div id="bucket"></div>
+      </div>
+
+      <!-- Popup for end of game and next level -->
+      <div class="popup" id="popup">
+        <h2>Your Score is: <span id="finalScore">0</span></h2>
+        <img id="kidsImage" src="images/kids.png" alt="Kids" style="display:none; max-width:100%; margin:10px auto;">
+        <div id="failMessage" style="display:none; color:#c62828; font-weight:bold;">
+          Family will have to walk 5 miles to collect the water now
+        </div>
+        <!-- Add this div for transform life and restart at end of level 2 -->
+        <div id="transformLife" style="display:none; margin:20px 0; text-align:center;">
+          <a href="https://www.charitywater.org/the-spring/direct?utm_content=nonbranded&msclkid=8a7184b4fd2b15a9362aecfa11908188" 
+             target="_blank" 
+             class="btn btn-warning fw-bold mb-2">
+            Transform Life
+          </a>
+          <br>
+          <button id="restartBtnLevel2" class="btn btn-primary mt-2">Restart</button>
+        </div>
+        <button id="restartBtn" class="btn btn-primary">Restart</button>
+        <button id="nextLevelBtn" class="btn btn-success d-none">Level 2</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game logic and confetti scripts -->
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+  
+ </body>
+</html>
