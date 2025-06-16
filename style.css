@@ -1,84 +1,213 @@
-<!-- Saved as index.html -->
-<!DOCTYPE html>
-<html lang="en">
+/* Main body styles: set background gradient, font, and prevent horizontal scroll */
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #a2d9ff 0%, #e0f7fa 100%);
+  position: relative;
+  overflow-x: hidden;
+  font-family: Arial, sans-serif;
+}
 
+/* Animated bubbles: floating effect for background decoration */
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: rise 10s linear infinite;
+}
 
-<head>
-  <!-- Meta and title -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Water Drop Catcher</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom styles -->
-  <link rel="stylesheet" href="style.css"  />
-</head>
+/* Keyframes for bubble rising animation */
+@keyframes rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1.2);
+    opacity: 0;
+  }
+}
 
+/* Game container: centers and constrains the game area, adds background and shadow */
+.game-container { /* HIGHLIGHTED: container around game for responsive width */
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.85);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
 
-<body>
-  <!-- Header and instructions -->
-  <div class="container text-center mt-3">
-    <div class="row">
-      <div class="col-12">
-        <!-- Enhanced Game icon and title -->
-        <div class="logo-wrapper mx-auto mb-2">
-          <img src="images/charity-water.png" alt="Charity Water" id="charityIcon" class="shadow" />
-        </div>
-        <h1 class="mt-2 text-primary">Water Drop Catcher</h1>
-        <p class="text-muted">Collect 200 clean drops to complete the game!</p>
-      </div>
-    </div>
-    <!-- Score and timer display -->
-    <div class="row mt-3">
-      <div class="col-6 text-start">
-        <div id="scoreBoard">Cans Collected: <span id="score">0</span></div>
-      </div>
-      <div class="col-6 text-end">
-        <p class="timer">Time Left: <span id="time">30</span>s</p>
-      </div>
-    </div>
-  </div>
+/* Game area: responsive size, blue water background, and optional pattern overlay */
+.game-area {
+  position: relative;
+  width: 100%;
+  height: 60vw; /* Responsive height relative to width */
+  max-height: 400px; /* Cap height for larger screens */
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+  /* New background: blue gradient + optional water pattern overlay */
+  background: linear-gradient(135deg, #b3e0fc 0%, #e0f7fa 100%);
+  /* Optional: overlay a semi-transparent water pattern image */
+  background-image:
+    url('images/water-pattern.png'),
+    linear-gradient(135deg, #b3e0fc 0%, #e0f7fa 100%);
+  background-size: cover, cover;
+  background-repeat: no-repeat, no-repeat;
+  overflow: hidden;
+}
 
-  <!-- Main game area container -->
-  <div class="container d-flex justify-content-center mt-3"> <!-- HIGHLIGHTED: Container for centering game -->
-    <div class="card p-3 game-container"> <!-- HIGHLIGHTED: Card/frame around game -->
+/* Bucket styles: yellow bucket with rounded bottom and shadow */
+#bucket {
+  width: var(--bucket-width, 80px);
+  height: 40px;
+  background: linear-gradient(180deg, #ffe066 60%, #ffd600 100%);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-radius: 0 0 14px 14px / 0 0 24px 24px;
+  border: 4px solid #ffb300;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.25);
+  overflow: visible;
+}
 
-      <!-- Game area where drops fall and bucket moves -->
-      <div class="game-area position-relative">
-        <!-- Start button overlay -->
-        <div id="startOverlay" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.85);z-index:10;display:flex;align-items:center;justify-content:center;">
-          <button id="startBtn" class="btn btn-lg btn-warning fw-bold">Start Game</button>
-        </div>
-        <div id="bucket"></div>
-      </div>
+/* Bucket handle: curved line above the bucket */
+#bucket::before {
+  content: '';
+  position: absolute;
+  top: -18px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  border: 3px solid #bfa600;
+  border-bottom: none;
+  border-radius: 28px 28px 0 0;
+  z-index: 1;
+}
 
-      <!-- Popup for end of game and next level -->
-      <div class="popup" id="popup">
-        <h2>Your Score is: <span id="finalScore">0</span></h2>
-        <img id="kidsImage" src="images/kids.png" alt="Kids" style="display:none; max-width:100%; margin:10px auto;">
-        <div id="failMessage" style="display:none; color:#c62828; font-weight:bold;">
-          Family will have to walk 5 miles to collect the water now
-        </div>
-        <!-- Add this div for transform life and restart at end of level 2 -->
-        <div id="transformLife" style="display:none; margin:20px 0; text-align:center;">
-          <a href="https://www.charitywater.org/the-spring/direct?utm_content=nonbranded&msclkid=8a7184b4fd2b15a9362aecfa11908188" 
-             target="_blank" 
-             class="btn btn-warning fw-bold mb-2">
-            Transform Life
-          </a>
-          <br>
-          <button id="restartBtnLevel2" class="btn btn-primary mt-2">Restart</button>
-        </div>
-        <button id="restartBtn" class="btn btn-primary">Restart</button>
-        <button id="nextLevelBtn" class="btn btn-success d-none">Level 2</button>
-      </div>
-    </div>
-  </div>
+/* Bucket ridges: vertical lines for detail */
+#bucket::after {
+  content: '';
+  position: absolute;
+  left: 38px;
+  top: 8px;
+  width: 4px;
+  height: 22px;
+  background: linear-gradient(180deg, #ffe066 60%, #ffd600 100%);
+  border-radius: 2px;
+  box-shadow:
+    -16px 0 0 0 #ffe066,
+    16px 0 0 0 #ffe066;
+  opacity: 0.5;
+  z-index: 2;
+}
 
-  <!-- Game logic and confetti scripts -->
-  <script src="script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+/* Water drop: blue gradient, animated spin, and shadow */
+.drop {
+  position: absolute;
+  width: 32px;
+  height: 48px;
+  top: 0;
+  border-radius: 50% 50% 60% 60% / 60% 60% 100% 100%;
+  background: radial-gradient(ellipse at 60% 30%, #b3e5fc 60%, #0288d1 100%);
+  box-shadow: 0 4px 12px rgba(2,136,209,0.2);
+  border: 2px solid #0288d1;
+  animation: drop-spin 1.2s linear infinite;
+}
 
-  
- </body>
-</html>
+/* Drop spin animation: gentle rotation for realism */
+@keyframes drop-spin {
+  0% { transform: rotate(-5deg);}
+  50% { transform: rotate(5deg);}
+  100% { transform: rotate(-5deg);}
+}
+
+/* Clean drop: adds a white shine highlight */
+.drop.clean::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  width: 8px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  transform: rotate(-20deg);
+}
+
+/* Dirty drop: brown/yellow gradient and border */
+.dirty {
+  background: radial-gradient(ellipse at 60% 30%, #ffe082 60%, #8d6e63 100%);
+  border-color: #8d6e63;
+}
+
+/* Popup: centered modal for messages, hidden by default */
+.popup {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  background: white;
+  padding: 20px;
+  border: 2px solid #000;
+  text-align: center;
+  display: none;
+}
+
+/* Logo wrapper: circular background for charity icon */
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #fffbe7 60%, #ffe082 100%);
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+/* Charity icon: rounded, padded, and shadowed image */
+#charityIcon { /* HIGHLIGHTED: styling for charity icon */
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.10);
+  background: #fffde7;
+  padding: 6px;
+}
+
+/* Stone: round, gray, shadowed obstacle */
+.stone {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  top: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #b0a99f 60%, #6d6760 100%);
+  box-shadow: 0 2px 8px rgba(80,70,60,0.2);
+  border: 2px solid #6d6760;
+  z-index: 2;
+}
+
+/* Shake animation: used for bucket when hit */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-8px); }
+  80% { transform: translateX(8px); }
+  100% { transform: translateX(0); }
+}
+
+/* Class to trigger shake animation on bucket */
+.bucket-shake {
+  animation: shake 0.4s;
+}
